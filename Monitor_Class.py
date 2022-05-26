@@ -1,7 +1,5 @@
 """
 Created on Wed May 3 2022
-Edits: 
-Tues May 10 2022
 
 @author: S P DeNero
 """
@@ -12,7 +10,8 @@ class Monitor(object):
     An object declaration for EPA Ambient monitors.
     """
 #    def __init__(self, lat, long, aqs, poll): #Eventually need to add values (List? Dict?) of all pollutants with Valid or Invalid flags for each
-    def __init__(self, aqsid=None, lat=None, long=None, site=None, county=None, DV_Pb=None):
+#    def __init__(self, aqsid=None, lat=None, long=None, site=None, county=None, DVs = {DV_pb:"N/A", DV_o3:"N/A", DV_no2_an:"N/A", DV_no2_hr:"N/A",DV_pm2_an:"N/A",DV_pm25_hr:"N/A"}):
+    def __init__(self, aqsid=None, lat=None, long=None, site=None, county=None, DV_pb="N/A", DV_o3="N/A", DV_no2_an="N/A", DV_no2_hr="N/A",  DV_pm25_an="N/A", DV_pm25_hr="N/A"):
         """
         A Monitor object has the following attributes:
         
@@ -23,7 +22,12 @@ class Monitor(object):
         county = monitor location county name
 
         Pollutants
-        Pb = Either an float value of Latest Design Value (DV) of Lead concentrations, or "N/A" representing that there is no valid DV for this monitor-pollutant pairing
+        pb = Either a float value of Latest Design Value (DV) of Lead concentrations, or "Not Valid"
+        o3 = Either a float value of Latest Design Value (DV) of Ozone concentrations, or "Not Valid"
+        no2 = NO2 has two design values: 1-hour average and annual average.
+            Both will have either a float value of Latest Design Value (DV) of NO2 concentrations, or "Not Valid", for each NO2 entry
+        pm2.5 = pm2.5 has two design values: 24-hour average and annual average.
+            Both will have either a float value of Latest Design Value (DV) of NO2 concentrations, or "Not Valid", for each PM2.5 entry
         """
 
         self.lat = lat
@@ -31,7 +35,14 @@ class Monitor(object):
         self.aqsid = aqsid
         self.site = site
         self.county = county
-        self.DV_Pb = DV_Pb
+        
+        
+        self.DV_Pb = DV_pb
+        self.DV_o3 = DV_o3
+        self.DV_no2_an = DV_no2_an
+        self.DV_no2_hr = DV_no2_hr
+        self.DV_pm25_an = DV_pm25_an
+        self.DV_pm25_hr = DV_pm25_hr
 
     def get_lat(self):
         return self.lat
@@ -51,8 +62,23 @@ class Monitor(object):
     def get_county(self):
         return self.county
 
-    def get_pollDV_Pb(self):
-        return self.DV_Pb
+    def get_pollDV_pb(self):
+        return self.DV_pb
+
+    def get_pollDV_o3(self):
+        return self.DV_o3
+
+    def get_pollDV_no2_an(self):
+        return self.DV_no2_an
+
+    def get_pollDV_no2_hr(self):
+        return self.DV_no2_hr
+
+    def get_pollDV_pm25_an(self):
+        return self.DV_pm25_an
+
+    def get_pollDV_pm25_hr(self):
+        return self.DV_pm25_hr
 
     def set_lat(self,lat):
         assert lat > 0 or math.isnan(lat), "Latitude in the Norther Hemisphere is Positive"
@@ -78,13 +104,34 @@ class Monitor(object):
     def set_county(self,county):
         self.county = county
 
-    def set_DV_Pb(self,DV_value):
-        self.DV_Pb = DV_value
+    def set_DV_pb(self,DV_value):
+        self.DV_pb = DV_value
 
-    # This is still To-be-Developed. Instead of a "set_DV_Pb" and "set_DV_(pollutant name)" method, just a single method that incorporates a PollName string variable.
+    def set_DV_o3(self, DV_value):
+        self.DV_o3 = DV_value
+
+    def set_DV_no2_an(self, DV_value):
+        self.DV_no2_an = DV_value
+
+    def set_DV_no2_hr(self, DV_value):
+        self.DV_no2_hr = DV_value
+
+    def set_DV_pm25_an(self, DV_value):
+        self.DV_pm25_an = DV_value
+
+    def set_DV_pm25_hr(self, DV_value):
+        self.DV_pm25_hr = DV_value
+
     # def set_pollDV(self,Pollutant,DV_value):
     #     self.
     #     self.DV_Pb = DV_Pb
 
     def __str__(self):
-        return str(self.aqsid) + ". " + self.site + " in " + self.county + " County at : [%0.3f, %0.3f]" % (self.lat, self.long)
+        return str(self.aqsid) + ". " + self.site + " in " + self.county + \
+               " County at : [%0.3f, %0.3f]" % (self.lat, self.long) + \
+               "\n Lead DV " + str(self.DV_Pb) + \
+               "\n Ozone DV " + str(self.DV_o3) + \
+               "\n Annual NO2 DV " + str(self.DV_no2_an) + \
+               "\n 1-Hour NO2 DV " + str(self.DV_no2_hr) + \
+               "\n Annual PM2.5 DV " + str(self.DV_pm25_an) + \
+               "\n 24-Hour PM2.5 DV " + str(self.DV_pm25_hr)
